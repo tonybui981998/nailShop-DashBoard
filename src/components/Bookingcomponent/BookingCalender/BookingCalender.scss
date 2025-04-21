@@ -1,0 +1,239 @@
+.booking-calendar-wrapper {
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+  width: 100%;
+  height: 100vh; // ✅ Full screen height
+  display: flex;
+  flex-direction: column;
+}
+
+.rbc-calendar {
+  flex: 1 1 auto;
+  height: 100% !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rbc-time-view {
+  height: 100% !important;
+}
+
+.rbc-time-content {
+  height: 100% !important;
+  font-size: 16px;
+}
+
+/* ✅ Tăng chiều cao của mỗi dòng thời gian */
+.rbc-timeslot-group {
+  border-color: #f0f0f0;
+  min-height: 50px !important; // tăng spacing giữa các khung giờ
+}
+
+/* ✅ Cố định layout để booking hiển thị đúng full chiều ngang */
+.rbc-day-slot {
+  position: relative;
+  width: 100%;
+}
+
+.rbc-day-slot .rbc-events-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 !important;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.rbc-event {
+  color: black !important;
+  font-size: 20px !important;
+  width: 100% !important;
+  left: 0 !important;
+  margin-right: 0 !important;
+  border-radius: 6px;
+  border: none;
+  box-sizing: border-box;
+  padding: 12px 14px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 50px !important;
+  overflow: hidden;
+  transition: all 0.5s ease; // 👈 smooth animation
+
+  &:hover {
+    min-height: 150px !important; // 👈 tăng chiều cao khi hover
+    white-space: normal;
+    overflow: visible;
+    z-index: 10;
+  }
+}
+.rbc-toolbar {
+  .rbc-btn-group:last-child {
+    button {
+      display: none;
+    }
+
+    button:nth-child(1) {
+      display: inline-block;
+    }
+
+    button:nth-child(2) {
+      display: none !important;
+    }
+  }
+}
+
+.staff-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  padding-left: 2.5%;
+
+  .staff-btn {
+    padding: 8px 16px;
+    background-color: #dcdcdc;
+    color: white;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 18px;
+
+    &.active {
+      background-color: grey;
+    }
+
+    &:hover {
+      background-color: grey;
+    }
+  }
+
+  .reset-btn {
+    padding: 8px 16px;
+    background-color: #e53935;
+    color: white;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #c62828;
+    }
+  }
+}
+
+.calendar-controls {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-left: 2.5%;
+}
+
+.week-btn {
+  padding: 8px 16px;
+  background-color: #0091ea;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #007acc;
+  }
+}
+
+.staff-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.reset-btn {
+  padding: 8px 16px;
+  background-color: #e53935;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #c62828;
+  }
+}
+
+.rbc-header {
+  padding: 12px 4px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 15px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 38px;
+  line-height: 1.4;
+  position: relative;
+  z-index: 2;
+}
+
+.rbc-header span {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rbc-today {
+  background-color: transparent !important;
+}
+.rbc-event-label {
+  font-size: 15px !important;
+  margin-bottom: 10px !important;
+}
+.event-time {
+  font-size: 20px !important;
+  margin-top: 15px;
+}
+.rbc-event-label {
+  display: none;
+}
+.rbc-header {
+  font-size: 22px !important;
+  button {
+    span {
+      font-size: 18px;
+    }
+  }
+}
+.rbc-toolbar-label {
+  font-size: 22px !important;
+}
+.rbc-btn-group {
+  button {
+    font-size: 18px;
+    margin-left: 5px;
+    margin-right: 8px;
+  }
+}
+.rbc-label {
+  font-size: 18px !important;
+}

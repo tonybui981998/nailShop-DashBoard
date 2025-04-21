@@ -1,0 +1,42 @@
+.dashboard {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-top: 30px;
+
+  .top-menu {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    background-color: #ffffff;
+    padding: 16px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
+
+    .options {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e3a8a;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #e0f2fe;
+        color: #0284c7;
+      }
+
+      &.active {
+        background-color: #1e3a8a;
+        color: white;
+        box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+      }
+    }
+  }
+
+  .content-area {
+    display: flex;
+  }
+}
