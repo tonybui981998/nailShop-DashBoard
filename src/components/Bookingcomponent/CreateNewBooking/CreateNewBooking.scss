@@ -1,0 +1,122 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.create-booking-modal {
+  background: #ffffff;
+  width: 680px;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 18px;
+  position: relative;
+
+  span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: #007aff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  input,
+  textarea {
+    padding: 10px 14px;
+    font-size: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
+
+    &:focus {
+      border-color: #007aff;
+      background: white;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+}
+
+.with-staff {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .requested-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #007aff;
+    }
+  }
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+
+  .info-cell {
+    flex: 1;
+
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+    }
+
+    div {
+      font-size: 15px;
+      margin-top: 4px;
+      color: #111827;
+    }
+  }
+}

@@ -1,9 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
-import PropTypes from "prop-types";
+import PropTypes, { bool } from "prop-types";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./BookingCalender.scss";
+import AppointmentDetail from "../AppointmentDetails/AppointmentDetail";
+import { useDispatch, useSelector } from "react-redux";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 const localizer = momentLocalizer(moment);
 
@@ -17,14 +20,63 @@ const formatDateTime = (dateString, timeString) => {
   return date;
 };
 
-const BookingCalendar = ({ GetStaffWorkingDay, GetAdminColorCheck }) => {
+const BookingCalendar = ({
+  GetAdminColorCheck,
+  deletebooking,
+  handleDisplayStaffWorking,
+  reLoadAdmin,
+}) => {
+  const { GetStaffWorkingDay } = useSelector((state) => state.counter);
+  const dispatch = useDispatch();
+  console.log("check staff", GetStaffWorkingDay);
+  // model
+  const [openModeldisplay, setOpenModeldisplay] = useState(false);
+  const [selectEvent, setSelectEvent] = useState();
   const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [currentView, setCurrentView] = useState(Views.DAY);
+  const [bookingService, setBookingService] = useState();
+  useEffect(() => {
+    const connection = new HubConnectionBuilder()
+      .withUrl("http://localhost:5215/bookingHub")
+      .withAutomaticReconnect()
+      .build();
+
+    const startConnection = async () => {
+      try {
+        await connection.start();
+        console.log("✅ Connected to SignalR from Dashboard");
+
+        connection.on("ReceiveBooking", async (bookingData) => {
+          console.log("📦 Received new booking:", bookingData);
+          await reLoadAdmin();
+          dispatch(handleDisplayStaffWorking(new Date()));
+        });
+      } catch (error) {
+        console.error("❌ SignalR connection failed:", error);
+      }
+    };
+
+    startConnection();
+
+    return () => {
+      connection.stop();
+    };
+  }, []);
+  // open model
+  const openModel = () => {
+    setOpenModeldisplay(true);
+  };
+  // close model
+  const closeModel = () => {
+    setOpenModeldisplay(false);
+  };
 
   const resources = GetStaffWorkingDay.map((staff) => ({
     resourceId: staff.id,
     resourceTitle: staff.fullName,
   }));
+  console.log("check staff", GetStaffWorkingDay);
+  console.log("check check", GetStaffWorkingDay);
 
   const events = GetStaffWorkingDay.flatMap((staff) =>
     (staff.bookingDtos || [])
@@ -40,20 +92,22 @@ const BookingCalendar = ({ GetStaffWorkingDay, GetAdminColorCheck }) => {
               b.endTime === booking.endTime
           )
       )
+
       .flatMap((booking) => {
         const baseStart = formatDateTime(
           booking.bookingDate,
           booking.startTime
         );
         let currentStart = new Date(baseStart);
-
         return booking.bookingServices.map((service, index) => {
+          console.log("check service", service);
           const durationInMinutes = parseInt(service.duration);
           const currentEnd = new Date(
             currentStart.getTime() + durationInMinutes * 60000
           );
-
+          console.log("chekc booking", booking);
           const event = {
+            bookedId: booking.id,
             id: `${booking.id}-${index}`,
             title: booking.customerName,
             service: service.selectedService,
@@ -61,6 +115,9 @@ const BookingCalendar = ({ GetStaffWorkingDay, GetAdminColorCheck }) => {
             end: new Date(currentEnd),
             resourceId: booking.staffId,
             totalServices: booking.bookingServices.length,
+            totalPrice: booking.totalPrice,
+            price: service.price,
+            bookingService: booking.bookingServices,
           };
 
           currentStart = new Date(currentEnd);
@@ -69,10 +126,7 @@ const BookingCalendar = ({ GetStaffWorkingDay, GetAdminColorCheck }) => {
       })
   );
 
-  const defaultDate = useMemo(() => {
-    const today = new Date();
-    return events.length > 0 ? events[0].start : today;
-  }, [events]);
+  const defaultDate = useMemo(() => new Date(), []);
 
   const filteredResources = selectedStaffId
     ? resources.filter((r) => r.resourceId === selectedStaffId)
@@ -115,13 +169,16 @@ const BookingCalendar = ({ GetStaffWorkingDay, GetAdminColorCheck }) => {
             setSelectedStaffId(null);
           }
         }}
+        onNavigate={(date) => {
+          dispatch(handleDisplayStaffWorking(date));
+        }}
         events={filteredEvents}
         resources={filteredResources}
         resourceIdAccessor="resourceId"
         resourceTitleAccessor="resourceTitle"
         onSelectResource={(resourceId) => {
           setSelectedStaffId(resourceId);
-          setCurrentView(Views.WEEK); // ✅ chuyển sang WEEK view
+          setCurrentView(Views.WEEK);
         }}
         groupByResource
         step={10}
@@ -129,11 +186,20 @@ const BookingCalendar = ({ GetStaffWorkingDay, GetAdminColorCheck }) => {
         min={new Date(0, 0, 0, 9, 0, 0)}
         max={new Date(0, 0, 0, 18, 0, 0)}
         style={{ height: 700 }}
-        views={[Views.DAY, Views.WEEK]} // ✅ dùng WEEK thay vì WORK_WEEK
+        views={[Views.DAY, Views.WEEK]}
         defaultView={Views.DAY}
         components={{
           event: ({ event }) => (
-            <div title={`${event.title} - ${event.service}`}>
+            <div className="rbc-event-content-wrapper">
+              <div
+                className="overlay-click-area"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openModel();
+                  setSelectEvent(event);
+                }}
+                title={`${event.title} - ${event.service}`}
+              />
               <div className="event-time">
                 {moment(event.start).format("hh:mm A")}
               </div>
@@ -158,6 +224,21 @@ const BookingCalendar = ({ GetStaffWorkingDay, GetAdminColorCheck }) => {
           };
         }}
       />
+      {openModeldisplay === true && (
+        <div className="modal-overlay" onClick={closeModel}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <AppointmentDetail
+              closeModel={closeModel}
+              selectEvent={selectEvent}
+              GetStaffWorkingDay={GetStaffWorkingDay}
+              deletebooking={deletebooking}
+              handleDisplayStaffWorking={handleDisplayStaffWorking}
+              reLoadAdmin={reLoadAdmin}
+              events={events}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

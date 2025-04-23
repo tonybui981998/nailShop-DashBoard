@@ -90,6 +90,26 @@ const getAdminColor = async () => {
     console.log(e);
   }
 };
+// delete whole booking appointment
+const deleteAppointment = async (id) => {
+  const apiDelete = import.meta.env.VITE_API_BOOKDELETE;
+  try {
+    const respond = await axios.delete(`${api}${apiDelete}/${id}`);
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+// delete each service
+const deleteService = async (data) => {
+  const apiDelete = import.meta.env.VITE_API_DELETESERVICE;
+  try {
+    const respond = await axios.delete(`${api}${apiDelete}`, { data });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 export {
   getLogin,
@@ -101,4 +121,6 @@ export {
   getAdminCreatePayroll,
   getPayrollHistory,
   getAdminColor,
+  deleteAppointment,
+  deleteService,
 };

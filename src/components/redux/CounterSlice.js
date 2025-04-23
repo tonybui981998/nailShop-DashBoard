@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import {
+  deleteAppointment,
   deleteFeedBack,
   DeleteRequired,
+  deleteService,
   getAdminColor,
   getadMinStaff,
   GetAllRequired,
@@ -58,6 +60,15 @@ export const fetAdminColor = createAsyncThunk(
     return result.data;
   }
 );
+export const fetBookingCancle = createAsyncThunk(
+  "counter/fetBookingCancle",
+  async (id, thunkAPI) => {
+    await deleteAppointment(id);
+    const reRender = await thunkAPI.dispatch(fetAdminStaff());
+    return reRender;
+  }
+);
+
 export const counterSlice = createSlice({
   name: "counter",
   initialState: {
@@ -76,7 +87,7 @@ export const counterSlice = createSlice({
       state.loginData = null;
     },
     handleDisplayStaffWorking: (state, action) => {
-      const today = new Date();
+      const today = new Date(action.payload);
       const dayName = today.toLocaleDateString("en-NZ", { weekday: "long" });
       state.GetStaffWorkingDay = state.AdminStaff.filter((staff) =>
         staff.staffScheduleDtos?.some((s) => s.dayOfWeek === dayName)
@@ -178,6 +189,18 @@ export const counterSlice = createSlice({
         state.GetAdminColorCheck = action.payload;
       })
       .addCase(fetAdminColor.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetBookingCancle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetBookingCancle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.AdminStaff = action.payload;
+      })
+      .addCase(fetBookingCancle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

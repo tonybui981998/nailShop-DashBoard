@@ -20,11 +20,12 @@ const DashBoard = () => {
     AdminStaff,
     GetStaffWorkingDay,
     GetAdminColorCheck,
+    deletebooking,
+    handleDisplayStaffWorking,
+    reLoadAdmin,
   } = useDashBoardLogin();
   const dispatch = useDispatch();
-  // console.log("check admin", AdminStaff);
-  //console.log("check staff working day", GetStaffWorkingDay);
-  //console.log("check color", GetAdminColorCheck);
+
   return (
     <div className="dashboard">
       {loading && (
@@ -66,6 +67,9 @@ const DashBoard = () => {
           <BookingCalender
             GetStaffWorkingDay={GetStaffWorkingDay}
             GetAdminColorCheck={GetAdminColorCheck}
+            deletebooking={deletebooking}
+            handleDisplayStaffWorking={handleDisplayStaffWorking}
+            reLoadAdmin={reLoadAdmin}
           />
         )}
       </div>
