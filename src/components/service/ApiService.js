@@ -110,7 +110,40 @@ const deleteService = async (data) => {
     console.log(e);
   }
 };
-
+// all service
+const getAllService = async () => {
+  const apiService = import.meta.env.VITE_API_MENU;
+  try {
+    const respond = await axios.get(`${api}${apiService}`);
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+const staffmakeBooking = async (data) => {
+  const apiService = import.meta.env.VITE_API_BOOKING;
+  console.log("check data", data);
+  try {
+    const respond = await axios.post(`${api}${apiService}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+// client update infor
+const updateBookingInfor = async (data) => {
+  const apiService = import.meta.env.VITE_API_UPDATECLIENTINFO;
+  try {
+    const respond = await axios.put(`${api}${apiService}`, data);
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
 export {
   getLogin,
   getCustomerFeedBack,
@@ -123,4 +156,7 @@ export {
   getAdminColor,
   deleteAppointment,
   deleteService,
+  getAllService,
+  staffmakeBooking,
+  updateBookingInfor,
 };

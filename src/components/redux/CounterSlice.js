@@ -8,9 +8,11 @@ import {
   getAdminColor,
   getadMinStaff,
   GetAllRequired,
+  getAllService,
   getCustomerFeedBack,
   getLogin,
   getPayrollHistory,
+  staffmakeBooking,
 } from "../service/ApiService";
 
 export const fetLogin = createAsyncThunk("counter/fetLogin", async (data) => {
@@ -68,7 +70,21 @@ export const fetBookingCancle = createAsyncThunk(
     return reRender;
   }
 );
+export const fetAllService = createAsyncThunk(
+  "counter/fetAllService",
+  async () => {
+    const respond = await getAllService();
+    return respond.data;
+  }
+);
 
+export const fetStaffBooking = createAsyncThunk(
+  "counter/fetStaffBooking",
+  async (data) => {
+    const respond = await staffmakeBooking(data);
+    return respond.data;
+  }
+);
 export const counterSlice = createSlice({
   name: "counter",
   initialState: {
@@ -81,6 +97,7 @@ export const counterSlice = createSlice({
     HistoryPayroll: [],
     GetStaffWorkingDay: [],
     GetAdminColorCheck: [],
+    GetAllServices: [],
   },
   reducers: {
     handleClockOut: (state) => {
@@ -201,6 +218,30 @@ export const counterSlice = createSlice({
         state.AdminStaff = action.payload;
       })
       .addCase(fetBookingCancle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetAllService.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetAllService.fulfilled, (state, action) => {
+        state.loading = false;
+        state.GetAllServices = action.payload;
+      })
+      .addCase(fetAllService.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetStaffBooking.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetStaffBooking.fulfilled, (state, action) => {
+        state.loading = false;
+        state.AdminStaff = action.payload;
+      })
+      .addCase(fetStaffBooking.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

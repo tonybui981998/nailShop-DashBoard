@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   fetAdminColor,
   fetAdminStaff,
+  fetAllService,
   fetBookingCancle,
   handleClockOut,
   handleDisplayStaffWorking,
@@ -18,25 +19,29 @@ const useDashBoardLogin = () => {
     (state) => state.counter
   );
   const reLoadAdmin = async () => {
-    const result = await dispatch(fetAdminStaff());
-    if (result != null) {
-      const today = new Date();
-      dispatch(handleDisplayStaffWorking(today));
-    }
-    dispatch(fetAdminColor());
+    await dispatch(fetAdminStaff());
+    await dispatch(fetAdminColor());
   };
+
   useEffect(() => {
-    reLoadAdmin();
+    const today = new Date();
+    const loadData = async () => {
+      await dispatch(fetAdminStaff());
+      await dispatch(fetAdminColor());
+      await dispatch(fetAllService());
+      dispatch(handleDisplayStaffWorking(today));
+    };
+
+    loadData();
     const interval = setInterval(() => {
-      const today = new Date().toDateString();
-      if (today !== currentDate) {
-        setCurrentDate(today);
-        useeffect();
+      const todayString = new Date().toDateString();
+      if (todayString !== currentDate) {
+        setCurrentDate(todayString);
       }
     }, 60000);
 
     return () => clearInterval(interval);
-  }, [currentDate]);
+  }, []);
 
   const clockOut = () => {
     setLoading(true);

@@ -28,8 +28,11 @@ const BookingCalendar = ({
 }) => {
   const { GetStaffWorkingDay } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
-  console.log("check staff", GetStaffWorkingDay);
+
+  console.log("check staff working day", GetStaffWorkingDay);
   // model
+  const [currentSelectedDate, setCurrentSelectedDate] = useState(new Date());
+
   const [openModeldisplay, setOpenModeldisplay] = useState(false);
   const [selectEvent, setSelectEvent] = useState();
   const [selectedStaffId, setSelectedStaffId] = useState(null);
@@ -44,10 +47,8 @@ const BookingCalendar = ({
     const startConnection = async () => {
       try {
         await connection.start();
-        console.log("✅ Connected to SignalR from Dashboard");
 
         connection.on("ReceiveBooking", async (bookingData) => {
-          console.log("📦 Received new booking:", bookingData);
           await reLoadAdmin();
           dispatch(handleDisplayStaffWorking(new Date()));
         });
@@ -75,8 +76,6 @@ const BookingCalendar = ({
     resourceId: staff.id,
     resourceTitle: staff.fullName,
   }));
-  console.log("check staff", GetStaffWorkingDay);
-  console.log("check check", GetStaffWorkingDay);
 
   const events = GetStaffWorkingDay.flatMap((staff) =>
     (staff.bookingDtos || [])
@@ -100,12 +99,11 @@ const BookingCalendar = ({
         );
         let currentStart = new Date(baseStart);
         return booking.bookingServices.map((service, index) => {
-          console.log("check service", service);
           const durationInMinutes = parseInt(service.duration);
           const currentEnd = new Date(
             currentStart.getTime() + durationInMinutes * 60000
           );
-          console.log("chekc booking", booking);
+
           const event = {
             bookedId: booking.id,
             id: `${booking.id}-${index}`,
@@ -118,6 +116,8 @@ const BookingCalendar = ({
             totalPrice: booking.totalPrice,
             price: service.price,
             bookingService: booking.bookingServices,
+            customerPhone: booking.customerPhone,
+            email: booking.email,
           };
 
           currentStart = new Date(currentEnd);
@@ -138,12 +138,11 @@ const BookingCalendar = ({
 
   const handleStaffClick = (id) => {
     setSelectedStaffId((prev) => (prev === id ? null : id));
-    setCurrentView(Views.WEEK); // ✅ dùng WEEK để hiển thị cả weekend
+    setCurrentView(Views.WEEK);
   };
 
   return (
     <div className="booking-calendar-wrapper">
-      {/* Staff Filter Buttons */}
       <div className="staff-buttons">
         {resources.map((staff) => (
           <button
@@ -158,7 +157,6 @@ const BookingCalendar = ({
         ))}
       </div>
 
-      {/* Calendar */}
       <Calendar
         localizer={localizer}
         defaultDate={defaultDate}
@@ -170,6 +168,7 @@ const BookingCalendar = ({
           }
         }}
         onNavigate={(date) => {
+          setCurrentSelectedDate(date);
           dispatch(handleDisplayStaffWorking(date));
         }}
         events={filteredEvents}
@@ -235,6 +234,8 @@ const BookingCalendar = ({
               handleDisplayStaffWorking={handleDisplayStaffWorking}
               reLoadAdmin={reLoadAdmin}
               events={events}
+              currentSelectedDate={currentSelectedDate}
+              setSelectEvent={setSelectEvent}
             />
           </div>
         </div>

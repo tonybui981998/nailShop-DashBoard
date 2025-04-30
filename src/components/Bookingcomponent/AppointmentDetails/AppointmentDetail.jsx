@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import CreateNewBooking from "../CreateNewBooking/CreateNewBooking";
 import { deleteService } from "../../service/ApiService";
 import HashLoader from "react-spinners/HashLoader";
+import CustomerDetails from "../../CustomerDetailsModel/CustomerDetails";
 const override = {
   display: "block",
   margin: "0 auto",
@@ -18,6 +19,8 @@ const AppointmentDetail = ({
   deletebooking,
   handleDisplayStaffWorking,
   reLoadAdmin,
+  currentSelectedDate,
+  setSelectEvent,
 }) => {
   let [loading, setLoading] = useState(false);
   const [openBookNext, setOpenBookNext] = useState(false);
@@ -28,33 +31,47 @@ const AppointmentDetail = ({
   const [allServiceBooking, setAllServiceBooking] = useState(
     selectEvent.bookingService
   );
-  console.log("check s", selectEvent);
+  const [opencustomerDetails, setOpenCustomerDetails] = useState(false);
   const fullDate = moment(selectEvent.start).format("ddd, D MMM, YYYY");
-
+  // open customer details model
+  const openCusDetails = () => {
+    setOpenCustomerDetails(true);
+  };
+  // close customerDetails model
+  const closeCusDetails = () => {
+    setOpenCustomerDetails(false);
+  };
+  // open booking model
   const openBook = () => {
     setOpenBookNext(true);
   };
-
+  // close booking model
   const closeBook = () => {
     setOpenBookNext(false);
   };
-
+  // get staff name
   const getStaffName = () => {
     const staffNames = GetStaffWorkingDay.find(
       (s) => s.id === selectEvent.resourceId
     );
     setStaffName(staffNames);
   };
-
+  // delete booking
   const deleteBookingApoint = async (id) => {
-    await deletebooking(id);
-    await reLoadAdmin();
-    closeModel();
+    setLoading(true);
+    setTimeout(async () => {
+      setLoading(false);
+      await deletebooking(id);
+      await reLoadAdmin();
+      dispatch(handleDisplayStaffWorking(currentSelectedDate));
+      closeModel();
+    }, 3000);
   };
 
   useEffect(() => {
     getStaffName();
   }, []);
+  // delete service
   const deleteEachService = async (service) => {
     const booking = {
       selectedService: service.selectedService,
@@ -67,11 +84,12 @@ const AppointmentDetail = ({
       setLoading(false);
       if (result.data.status === "success") {
         await reLoadAdmin();
-        dispatch(handleDisplayStaffWorking(new Date()));
+        dispatch(handleDisplayStaffWorking(currentSelectedDate));
         const updateList = allServiceBooking.filter(
           (s) => s.selectedService != service.selectedService
         );
         setAllServiceBooking(updateList);
+        selectEvent.bookingService = updateList;
       }
     }, 3000);
   };
@@ -95,7 +113,13 @@ const AppointmentDetail = ({
           <button onClick={closeModel}>Close</button>
         </div>
 
-        <div className="customer-name">{selectEvent.title}</div>
+        <div
+          style={{ cursor: "pointer" }}
+          className="customer-name"
+          onClick={() => openCusDetails()}
+        >
+          {selectEvent.title}
+        </div>
 
         <div className="date-time-section">
           {allServiceBooking.map((service, index) => {
@@ -192,7 +216,24 @@ const AppointmentDetail = ({
         </div>
 
         {openBookNext && (
-          <CreateNewBooking closeBook={closeBook} selectEvent={selectEvent} />
+          <CreateNewBooking
+            closeBook={closeBook}
+            selectEvent={selectEvent}
+            reLoadAdmin={reLoadAdmin}
+            currentSelectedDate={currentSelectedDate}
+            handleDisplayStaffWorking={handleDisplayStaffWorking}
+            closeModel={closeModel}
+          />
+        )}
+        {opencustomerDetails && (
+          <CustomerDetails
+            selectEvent={selectEvent}
+            closeCusDetails={closeCusDetails}
+            reLoadAdmin={reLoadAdmin}
+            currentSelectedDate={currentSelectedDate}
+            handleDisplayStaffWorking={handleDisplayStaffWorking}
+            setSelectEvent={setSelectEvent}
+          />
         )}
       </div>
     </div>
