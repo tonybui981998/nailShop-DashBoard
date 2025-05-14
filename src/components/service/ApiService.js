@@ -1,4 +1,5 @@
 import axios from "axios";
+import { data } from "react-router-dom";
 const api = import.meta.env.VITE_API_KEY;
 // user login
 const getLogin = (data) => {
@@ -144,6 +145,44 @@ const updateBookingInfor = async (data) => {
     console.log(e);
   }
 };
+// check voucher
+const checkvoucher = async (data) => {
+  const apiVoucher = import.meta.env.VITE_API_CHECKVOUCHER;
+  try {
+    const respond = await axios.post(`${api}${apiVoucher}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+// check out
+const checkout = async (data) => {
+  const apicheckout = import.meta.env.VITE_API_CHECKOUT;
+  try {
+    const respond = await axios.post(`${api}${apicheckout}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+// check to confirm checkout
+const confirmcheckout = async (id) => {
+  const apicheckout = import.meta.env.VITE_API_CHECKCONFIRMCHECKOUT;
+  try {
+    const respond = await axios.get(`${api}${apicheckout}/${id}`);
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
 export {
   getLogin,
   getCustomerFeedBack,
@@ -159,4 +198,7 @@ export {
   getAllService,
   staffmakeBooking,
   updateBookingInfor,
+  checkvoucher,
+  checkout,
+  confirmcheckout,
 };

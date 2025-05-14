@@ -26,7 +26,7 @@ const CustomerDetails = ({
     borderColor: "red",
   };
   const dispatch = useDispatch();
-  console.log("check checl", selectEvent);
+  //console.log("check checl", selectEvent);
   // submit button
   const submit = () => {
     const data = {
@@ -35,7 +35,9 @@ const CustomerDetails = ({
       customerPhone: tempCusDetails.customerPhone,
       email: tempCusDetails.email,
     };
-    setloading(true);
+    setTimeout(() => {
+      setloading(true);
+    }, 300);
     setTimeout(async () => {
       setloading(false);
       const result = await updateBookingInfor(data);

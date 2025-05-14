@@ -26,6 +26,7 @@
   cursor: pointer;
   z-index: 2;
   background: transparent;
+  animation: fadeOverlay 0.3s ease-out;
 }
 
 .modal-overlay {
@@ -39,6 +40,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: fadeOverlay 0.3s ease-out;
 }
 
 .modal-content {
@@ -274,4 +276,12 @@
 }
 .rbc-label {
   font-size: 18px !important;
+}
+@keyframes fadeOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

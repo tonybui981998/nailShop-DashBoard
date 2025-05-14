@@ -4,6 +4,20 @@
   background: #f5f7fa;
   padding-top: 30px;
 
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeOverlay 0.3s ease-out; // 👈 Thêm dòng này
+  }
+
   .top-menu {
     display: flex;
     justify-content: center;
@@ -38,5 +52,13 @@
 
   .content-area {
     display: flex;
+  }
+}
+@keyframes fadeOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

@@ -3,9 +3,10 @@ import moment from "moment";
 import "./AppointmentDetail.scss";
 import { useDispatch } from "react-redux";
 import CreateNewBooking from "../CreateNewBooking/CreateNewBooking";
-import { deleteService } from "../../service/ApiService";
+import { confirmcheckout, deleteService } from "../../service/ApiService";
 import HashLoader from "react-spinners/HashLoader";
 import CustomerDetails from "../../CustomerDetailsModel/CustomerDetails";
+import CheckOutModel from "../../CheckOutModel/CheckOutModel";
 const override = {
   display: "block",
   margin: "0 auto",
@@ -32,7 +33,18 @@ const AppointmentDetail = ({
     selectEvent.bookingService
   );
   const [opencustomerDetails, setOpenCustomerDetails] = useState(false);
+  const [openChekoutModel, setOpenCheckOutModel] = useState(false);
+  const [checkbookingexist, setcheckbookingexist] = useState();
   const fullDate = moment(selectEvent.start).format("ddd, D MMM, YYYY");
+
+  // open check out model
+  const openChekOut = () => {
+    setOpenCheckOutModel(true);
+  };
+  // close check out model
+  const closeCheckout = () => {
+    setOpenCheckOutModel(false);
+  };
   // open customer details model
   const openCusDetails = () => {
     setOpenCustomerDetails(true);
@@ -67,9 +79,18 @@ const AppointmentDetail = ({
       closeModel();
     }, 3000);
   };
-
+  //console.log("check select even", selectEvent);
+  const checkConfirmcheckout = async () => {
+    //  console.log("check id", selectEvent.bookedId);
+    const respond = await confirmcheckout(selectEvent.bookedId);
+    setcheckbookingexist(respond.data.status);
+    //  console.log("check respond", respond);
+  };
   useEffect(() => {
     getStaffName();
+  }, []);
+  useEffect(() => {
+    checkConfirmcheckout();
   }, []);
   // delete service
   const deleteEachService = async (service) => {
@@ -93,6 +114,7 @@ const AppointmentDetail = ({
       }
     }, 3000);
   };
+  console.log("check exist", checkbookingexist);
   return (
     <div className="modal-overlay" onClick={closeBook}>
       <div className="appointment-detail" onClick={(e) => e.stopPropagation()}>
@@ -188,7 +210,20 @@ const AppointmentDetail = ({
 
         <ul className="action-list">
           <li>Send text message</li>
-          <li>Check out</li>
+          {checkbookingexist === "notfound" ? (
+            <li onClick={() => openChekOut()}>Check out</li>
+          ) : (
+            <li
+              style={{
+                pointerEvents: "none",
+                opacity: 0.5,
+                cursor: "not-allowed",
+              }}
+            >
+              Check out
+            </li>
+          )}
+
           <li onClick={() => openBook()}>Book next</li>
           <li onClick={() => deleteBookingApoint(selectEvent.bookedId)}>
             Cancel
@@ -233,6 +268,14 @@ const AppointmentDetail = ({
             currentSelectedDate={currentSelectedDate}
             handleDisplayStaffWorking={handleDisplayStaffWorking}
             setSelectEvent={setSelectEvent}
+          />
+        )}
+        {openChekoutModel && (
+          <CheckOutModel
+            selectEvent={selectEvent}
+            allServiceBooking={allServiceBooking}
+            closeCheckout={closeCheckout}
+            checkConfirmcheckout={checkConfirmcheckout}
           />
         )}
       </div>
