@@ -183,6 +183,31 @@ const confirmcheckout = async (id) => {
     console.log(e);
   }
 };
+// admin send email
+const adminEmail = async (data) => {
+  const apiMessage = import.meta.env.VITE_API_SENDMESSAGE;
+  try {
+    const respond = await axios.post(`${api}${apiMessage}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+// get booking confirm
+const getBookingConfirm = async () => {
+  const apiConfirmbooking = import.meta.env.VITE_API_CONFIRMBOOKING;
+  try {
+    const respond = await axios.get(`${api}${apiConfirmbooking}`);
+    //console.log("check respond ", respond);
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
 export {
   getLogin,
   getCustomerFeedBack,
@@ -201,4 +226,6 @@ export {
   checkvoucher,
   checkout,
   confirmcheckout,
+  adminEmail,
+  getBookingConfirm,
 };

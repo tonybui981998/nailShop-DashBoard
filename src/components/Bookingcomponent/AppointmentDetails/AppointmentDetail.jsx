@@ -3,10 +3,15 @@ import moment from "moment";
 import "./AppointmentDetail.scss";
 import { useDispatch } from "react-redux";
 import CreateNewBooking from "../CreateNewBooking/CreateNewBooking";
-import { confirmcheckout, deleteService } from "../../service/ApiService";
+import {
+  confirmcheckout,
+  deleteService,
+  getBookingConfirm,
+} from "../../service/ApiService";
 import HashLoader from "react-spinners/HashLoader";
 import CustomerDetails from "../../CustomerDetailsModel/CustomerDetails";
 import CheckOutModel from "../../CheckOutModel/CheckOutModel";
+import SendMessageModel from "../../MessagesendModel/SendMessageModel";
 const override = {
   display: "block",
   margin: "0 auto",
@@ -36,6 +41,9 @@ const AppointmentDetail = ({
   const [openChekoutModel, setOpenCheckOutModel] = useState(false);
   const [checkbookingexist, setcheckbookingexist] = useState();
   const fullDate = moment(selectEvent.start).format("ddd, D MMM, YYYY");
+  const [openMessageModel, setOpenMessageModel] = useState(false);
+  const [bookingConfirmData, setBookingConfirmData] = useState();
+  const [openService, setOpenService] = useState();
 
   // open check out model
   const openChekOut = () => {
@@ -61,12 +69,24 @@ const AppointmentDetail = ({
   const closeBook = () => {
     setOpenBookNext(false);
   };
+  // open send message model
+  const openSendMessage = () => {
+    setOpenMessageModel(true);
+  };
+  // close send message model
+  const closeSendMessage = () => {
+    setOpenMessageModel(false);
+  };
   // get staff name
   const getStaffName = () => {
     const staffNames = GetStaffWorkingDay.find(
       (s) => s.id === selectEvent.resourceId
     );
     setStaffName(staffNames);
+  };
+  // open and close service button
+  const serviceOpenclose = (index) => {
+    setOpenService(openService === index ? null : index);
   };
   // delete booking
   const deleteBookingApoint = async (id) => {
@@ -79,12 +99,10 @@ const AppointmentDetail = ({
       closeModel();
     }, 3000);
   };
-  //console.log("check select even", selectEvent);
+
   const checkConfirmcheckout = async () => {
-    //  console.log("check id", selectEvent.bookedId);
     const respond = await confirmcheckout(selectEvent.bookedId);
     setcheckbookingexist(respond.data.status);
-    //  console.log("check respond", respond);
   };
   useEffect(() => {
     getStaffName();
@@ -92,6 +110,22 @@ const AppointmentDetail = ({
   useEffect(() => {
     checkConfirmcheckout();
   }, []);
+  // display previous booking
+  const getbookingConfirmData = async () => {
+    const respond = await getBookingConfirm();
+
+    const matchData = respond.data.filter(
+      (s) =>
+        s &&
+        s.cusName === selectEvent.title &&
+        selectEvent.customerPhone === s.cusPhone
+    );
+    setBookingConfirmData(matchData);
+  };
+  useEffect(() => {
+    getbookingConfirmData();
+  }, []);
+
   // delete service
   const deleteEachService = async (service) => {
     const booking = {
@@ -114,7 +148,19 @@ const AppointmentDetail = ({
       }
     }, 3000);
   };
-  console.log("check exist", checkbookingexist);
+  // format booking date
+  const formatDate = (date) => {
+    const format = new Date(date).toLocaleDateString("en-nz");
+    return format;
+  };
+  // format start -end time
+  const formatTime = (time) => {
+    //console.log("check time time", time);
+    const [hour, mins] = time?.split(":");
+    const amp = hour < 12 ? "AM" : "PM";
+    return `${hour}:${mins} `;
+  };
+  console.log("check even", selectEvent);
   return (
     <div className="modal-overlay" onClick={closeBook}>
       <div className="appointment-detail" onClick={(e) => e.stopPropagation()}>
@@ -145,7 +191,6 @@ const AppointmentDetail = ({
 
         <div className="date-time-section">
           {allServiceBooking.map((service, index) => {
-            console.log("check service", service);
             const baseStart = moment(selectEvent.start);
             const prevDuration = allServiceBooking
               .slice(0, index)
@@ -184,32 +229,8 @@ const AppointmentDetail = ({
           })}
         </div>
 
-        <div className="status-section">
-          <div className="status-label">Status</div>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="status-dropdown"
-          >
-            <option value="did-not-come">Did not come</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="come-late">Come late</option>
-          </select>
-
-          {status === "come-late" && (
-            <input
-              type="number"
-              placeholder="Minutes late"
-              value={minuteLate}
-              onChange={(e) => setMinuteLate(e.target.value)}
-              className="late-minutes-input"
-              min="1"
-            />
-          )}
-        </div>
-
         <ul className="action-list">
-          <li>Send text message</li>
+          <li onClick={() => openSendMessage()}>Send text message</li>
           {checkbookingexist === "notfound" ? (
             <li onClick={() => openChekOut()}>Check out</li>
           ) : (
@@ -231,7 +252,7 @@ const AppointmentDetail = ({
         </ul>
 
         <div className="technical-info">
-          <strong>Upcomming appointment - {status}</strong>
+          <strong>Upcomming appointment </strong>
           <p>
             {allServiceBooking.map((item, index) => {
               return (
@@ -243,12 +264,63 @@ const AppointmentDetail = ({
           </p>
           <p>with {staffName?.fullName || "Unknown"}</p>
         </div>
-
         <div className="technical-info">
-          <strong>Previous appointment</strong>
-          <p>{fullDate} - Not started</p>
-          <p>with {staffName?.fullName || "Unknown"}</p>
+          <strong>Previous Appointments</strong>
         </div>
+
+        {bookingConfirmData &&
+          bookingConfirmData.map((booking, index) => (
+            <div className="bookinghistory" key={index}>
+              <div className="booking-summary">
+                <span className="label">Status:</span>
+                <span className="value">{booking.bookingStatus}</span>
+              </div>
+              <div className="booking-summary">
+                <span className="label">Discount:</span>
+                <span className="value">{booking.discount}%</span>
+              </div>
+              <div className="booking-summary">
+                <span className="label">Total Paid:</span>
+                <span className="value">${booking.totalPay}</span>
+              </div>
+              <div className="booking-summary">
+                <span className="label">BookingDate:</span>
+                <span className="value">{formatDate(booking.bookingDate)}</span>
+              </div>
+              <div className="booking-summary">
+                <span className="label">Start-End:</span>
+                <span className="value">
+                  {formatTime(booking.startTime)} -{" "}
+                  {formatTime(booking.endTime)}
+                </span>
+              </div>
+
+              <button
+                className="toggle-service-btn"
+                onClick={() => serviceOpenclose(index)}
+              >
+                {openService === index ? "Hide Services" : "View Services"}
+              </button>
+
+              {openService === index && (
+                <div className="service-list">
+                  {booking.service.map((service, idx) => (
+                    <div className="service-item" key={idx}>
+                      <div>
+                        <strong>Service:</strong> {service.selectedService}
+                      </div>
+                      <div>
+                        <strong>Time:</strong> {service.duration} mins
+                      </div>
+                      <div>
+                        <strong>Price:</strong> ${service.price}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
 
         {openBookNext && (
           <CreateNewBooking
@@ -276,6 +348,12 @@ const AppointmentDetail = ({
             allServiceBooking={allServiceBooking}
             closeCheckout={closeCheckout}
             checkConfirmcheckout={checkConfirmcheckout}
+          />
+        )}
+        {openMessageModel && (
+          <SendMessageModel
+            closeSendMessage={closeSendMessage}
+            selectEvent={selectEvent}
           />
         )}
       </div>

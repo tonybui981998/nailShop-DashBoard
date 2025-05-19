@@ -1,16 +1,24 @@
 .appointment-detail {
   background: #ffffff;
-  border-radius: 12px;
-  padding: 28px;
-  width: 400px;
+  border-radius: 20px;
+  padding: 30px;
+  width: 460px;
   font-family: "Segoe UI", sans-serif;
   color: #1f2937;
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  scrollbar-width: thin;
+  scrollbar-color: #007aff transparent;
 
-  &.blurred {
-    filter: blur(4px);
-    pointer-events: none;
-    user-select: none;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #007aff;
+    border-radius: 8px;
   }
 
   .overlay {
@@ -19,31 +27,28 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
-    border-radius: 12px;
-    animation: fadeOverlay 0.3s ease-out;
+    border-radius: 20px;
   }
 
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 25px;
-    font-weight: 600;
-    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
 
     button {
       background: none;
       border: none;
       color: #007aff;
       font-size: 18px;
-      font-weight: 500;
       cursor: pointer;
-      transition: color 0.2s ease;
 
       &:hover {
         color: #005bb5;
@@ -54,105 +59,69 @@
   .customer-name {
     font-weight: 600;
     font-size: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    color: #111827;
+    cursor: pointer;
   }
 
   .date-time-section {
-    border-left: 4px solid #007aff;
+    border-left: 5px solid #007aff;
     padding-left: 18px;
     margin-bottom: 28px;
 
-    // ✅ Scroll dọc, ẩn ngang
-    max-height: 250px;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    scrollbar-width: thin;
-    scrollbar-color: #007aff transparent;
-
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #007aff;
-      border-radius: 8px;
-    }
-
     .service-block {
-      margin-bottom: 20px;
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
       position: relative;
 
       .remove-service-btn {
-        font-size: 35px;
-        font-weight: bold;
-        color: #dc2626;
         position: absolute;
-        right: -6px;
-        top: 0;
+        top: 12px;
+        right: 14px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #ef4444;
         cursor: pointer;
-        transition: transform 0.2s ease;
-
-        &:hover {
-          transform: scale(1.2);
-        }
       }
-    }
 
-    .time-range,
-    .service-name,
-    .price {
-      font-size: 18px;
-      margin: 8px 0;
-      white-space: nowrap; // tùy chọn, để chữ không bị xuống dòng
-    }
+      .time-range,
+      .service-name,
+      .price {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
 
-    .price {
-      font-weight: 600;
-      color: #16a34a;
-      font-size: 18px;
+      .price {
+        font-weight: 600;
+        color: #16a34a;
+      }
     }
   }
 
   .status-section {
     margin-bottom: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 
     .status-label {
-      font-weight: 600;
-      font-size: 20px;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 10px;
     }
 
-    .status-dropdown {
-      padding: 8px 10px;
-      font-size: 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      outline: none;
-
-      &:focus {
-        border-color: #007aff;
-      }
-    }
-
+    .status-dropdown,
     .late-minutes-input {
-      padding: 8px 10px;
+      width: 100%;
+      padding: 10px 12px;
       font-size: 16px;
       border: 1px solid #d1d5db;
-      border-radius: 6px;
-      width: fit-content;
-      outline: none;
+      border-radius: 8px;
+      margin-bottom: 12px;
 
       &:focus {
+        outline: none;
         border-color: #007aff;
       }
-    }
-
-    .status-note {
-      font-size: 16px;
-      color: #6b7280;
     }
   }
 
@@ -162,10 +131,10 @@
     margin-bottom: 28px;
 
     li {
-      padding: 12px 0;
-      border-bottom: 1px solid #e5e7eb;
-      font-size: 18px;
+      padding: 14px 0;
+      font-size: 17px;
       color: #007aff;
+      border-bottom: 1px solid #e5e7eb;
       cursor: pointer;
       transition: background-color 0.2s ease;
 
@@ -175,7 +144,7 @@
 
       &:last-child {
         color: #dc2626;
-        font-weight: 600;
+        font-weight: 700;
 
         &:hover {
           background-color: #fee2e2;
@@ -185,22 +154,98 @@
   }
 
   .technical-info {
-    font-size: 16px;
-    margin-bottom: 25px;
+    margin-bottom: 28px;
 
     strong {
       display: block;
-      font-weight: 600;
-      color: #374151;
+      font-size: 18px;
+      font-weight: 700;
       margin-bottom: 10px;
+      color: #374151;
+    }
+
+    .service {
+      font-size: 16px;
+      padding-left: 10px;
+      margin-bottom: 4px;
+      color: #4b5563;
     }
 
     p {
-      margin: 4px 0;
+      font-size: 16px;
       color: #4b5563;
+      margin: 4px 0;
+    }
+  }
+
+  .bookinghistory {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+
+    .booking-summary {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      margin-bottom: 10px;
+
+      .label {
+        font-weight: 600;
+        color: #4b5563;
+      }
+
+      .value {
+        font-weight: 500;
+        color: #1f2937;
+      }
+    }
+
+    .toggle-service-btn {
+      margin-top: 10px;
+      padding: 8px 14px;
+      background-color: #007aff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #005bb5;
+      }
+    }
+
+    .service-list {
+      margin-top: 14px;
+      border-top: 1px dashed #d1d5db;
+      padding-top: 12px;
+
+      .service-item {
+        font-size: 15px;
+        padding: 10px 0;
+        border-bottom: 1px solid #e5e7eb;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        div {
+          margin-bottom: 4px;
+          color: #374151;
+        }
+
+        strong {
+          color: #111827;
+        }
+      }
     }
   }
 }
+
 @keyframes fadeOverlay {
   from {
     opacity: 0;

@@ -29,7 +29,6 @@ const BookingCalendar = ({
   const { GetStaffWorkingDay } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
 
-  console.log("check staff working day", GetStaffWorkingDay);
   // model
   const [currentSelectedDate, setCurrentSelectedDate] = useState(new Date());
 
@@ -97,6 +96,7 @@ const BookingCalendar = ({
           booking.bookingDate,
           booking.startTime
         );
+        console.log("check time", booking);
         let currentStart = new Date(baseStart);
         return booking.bookingServices.map((service, index) => {
           const durationInMinutes = parseInt(service.duration);
@@ -118,6 +118,9 @@ const BookingCalendar = ({
             bookingService: booking.bookingServices,
             customerPhone: booking.customerPhone,
             email: booking.email,
+            DateTime: booking.bookingDate,
+            bookingStart: booking.startTime,
+            bookingEnd: booking.endTime,
           };
 
           currentStart = new Date(currentEnd);

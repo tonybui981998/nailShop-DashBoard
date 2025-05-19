@@ -54,7 +54,6 @@ const CustomerDetails = ({
       } else {
         toast.error(result.data.message);
       }
-      console.log("check data", result);
     }, 3000);
   };
   return (

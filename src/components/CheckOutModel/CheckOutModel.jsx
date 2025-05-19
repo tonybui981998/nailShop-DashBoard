@@ -34,7 +34,7 @@ const CheckOutModel = ({
   const handleEditPriceService = (index) => {
     setEditPriceService((prev) => (prev === index ? null : index));
   };
-  //console.log("check even", selectEvent);
+
   // onchange edit price
   const editPrice = (e, index) => {
     const updatePrice = [...tempPrice];
@@ -92,8 +92,6 @@ const CheckOutModel = ({
       setVoucherMessage(result.data.remainingAmount);
       setVoucherAmount(result.data.remainingAmount);
     }
-
-    // console.log("check result", result);
   };
   useEffect(() => {
     if (!voucher) {
@@ -114,7 +112,12 @@ const CheckOutModel = ({
         discount: disCount,
         totalPay: totalPriceService,
         bookingId: selectEvent.bookedId,
+        CusName: selectEvent.title,
+        CusPhone: selectEvent.customerPhone,
         remainingMoney: remainMoney,
+        BookingDate: selectEvent.DateTime,
+        StartTime: selectEvent.bookingStart,
+        EndTime: selectEvent.bookingEnd,
         service: allService.map((s) => ({
           selectedService: s.selectedService,
           duration: s.duration,
@@ -127,10 +130,12 @@ const CheckOutModel = ({
         usedBy: selectEvent.title,
       },
     };
+
     setTimeout(async () => {
       setLoading(false);
       const respond = await checkout(data);
-      toast.success("success");
+      console.log("check respond", respond);
+      //toast.success("success");
       checkConfirmcheckout();
       setTimeout(() => {
         closeCheckout();
@@ -138,7 +143,7 @@ const CheckOutModel = ({
       console.log(data);
     }, 3000);
   };
-  console.log("check voucher", voucherInfor);
+  console.log("check voucher", selectEvent);
   return (
     <div className="modal-overlay">
       <div className="modal-container">

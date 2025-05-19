@@ -19,7 +19,6 @@ const CreateNewBooking = ({
   handleDisplayStaffWorking,
   closeModel,
 }) => {
-  console.log("check even", selectEvent);
   const { AdminStaff, GetAllServices } = useSelector((state) => state.counter);
   const [requested, setRequested] = useState(false);
   const [previousService, setPreviousService] = useState(
@@ -115,6 +114,7 @@ const CreateNewBooking = ({
       closeModel();
     }, 3000);
   };
+
   return (
     <div className="modal-overlay" onClick={closeBook}>
       <div
