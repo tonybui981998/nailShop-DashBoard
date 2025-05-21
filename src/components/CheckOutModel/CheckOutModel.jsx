@@ -130,12 +130,12 @@ const CheckOutModel = ({
         usedBy: selectEvent.title,
       },
     };
-
+    console.log("check data", data);
     setTimeout(async () => {
       setLoading(false);
       const respond = await checkout(data);
       console.log("check respond", respond);
-      //toast.success("success");
+      toast.success("success");
       checkConfirmcheckout();
       setTimeout(() => {
         closeCheckout();

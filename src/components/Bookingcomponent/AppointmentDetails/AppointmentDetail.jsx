@@ -113,7 +113,7 @@ const AppointmentDetail = ({
   // display previous booking
   const getbookingConfirmData = async () => {
     const respond = await getBookingConfirm();
-
+    console.log("check respond", respond);
     const matchData = respond.data.filter(
       (s) =>
         s &&
@@ -160,7 +160,7 @@ const AppointmentDetail = ({
     const amp = hour < 12 ? "AM" : "PM";
     return `${hour}:${mins} `;
   };
-  console.log("check even", selectEvent);
+  console.log("check booking confirm", bookingConfirmData);
   return (
     <div className="modal-overlay" onClick={closeBook}>
       <div className="appointment-detail" onClick={(e) => e.stopPropagation()}>
@@ -246,9 +246,21 @@ const AppointmentDetail = ({
           )}
 
           <li onClick={() => openBook()}>Book next</li>
-          <li onClick={() => deleteBookingApoint(selectEvent.bookedId)}>
-            Cancel
-          </li>
+          {checkbookingexist === "notfound" ? (
+            <li onClick={() => deleteBookingApoint(selectEvent.bookedId)}>
+              Cancel
+            </li>
+          ) : (
+            <li
+              style={{
+                pointerEvents: "none",
+                opacity: 0.5,
+                cursor: "not-allowed",
+              }}
+            >
+              Cancel
+            </li>
+          )}
         </ul>
 
         <div className="technical-info">
@@ -271,37 +283,22 @@ const AppointmentDetail = ({
         {bookingConfirmData &&
           bookingConfirmData.map((booking, index) => (
             <div className="bookinghistory" key={index}>
+              {booking.bookingStatus === "confirmed" ? (
+                ""
+              ) : (
+                <div className="booking-summary">
+                  <span className="value">{booking.bookingStatus}</span>
+                </div>
+              )}
               <div className="booking-summary">
-                <span className="label">Status:</span>
-                <span className="value">{booking.bookingStatus}</span>
-              </div>
-              <div className="booking-summary">
-                <span className="label">Discount:</span>
-                <span className="value">{booking.discount}%</span>
-              </div>
-              <div className="booking-summary">
-                <span className="label">Total Paid:</span>
-                <span className="value">${booking.totalPay}</span>
-              </div>
-              <div className="booking-summary">
-                <span className="label">BookingDate:</span>
                 <span className="value">{formatDate(booking.bookingDate)}</span>
               </div>
-              <div className="booking-summary">
-                <span className="label">Start-End:</span>
-                <span className="value">
-                  {formatTime(booking.startTime)} -{" "}
-                  {formatTime(booking.endTime)}
+              <div className="booking-summary" style={{ cursor: "pointer" }}>
+                <span onClick={() => serviceOpenclose(index)} className="value">
+                  {booking.service[0].selectedService}
                 </span>
               </div>
-
-              <button
-                className="toggle-service-btn"
-                onClick={() => serviceOpenclose(index)}
-              >
-                {openService === index ? "Hide Services" : "View Services"}
-              </button>
-
+              <div> with {staffName?.fullName || "Unknown"}</div>
               {openService === index && (
                 <div className="service-list">
                   {booking.service.map((service, idx) => (

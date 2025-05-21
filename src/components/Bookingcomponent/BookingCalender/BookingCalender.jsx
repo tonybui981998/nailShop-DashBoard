@@ -96,7 +96,7 @@ const BookingCalendar = ({
           booking.bookingDate,
           booking.startTime
         );
-        console.log("check time", booking);
+
         let currentStart = new Date(baseStart);
         return booking.bookingServices.map((service, index) => {
           const durationInMinutes = parseInt(service.duration);
@@ -121,6 +121,7 @@ const BookingCalendar = ({
             DateTime: booking.bookingDate,
             bookingStart: booking.startTime,
             bookingEnd: booking.endTime,
+            appointmentStart: baseStart,
           };
 
           currentStart = new Date(currentEnd);
@@ -198,7 +199,10 @@ const BookingCalendar = ({
                 onClick={(e) => {
                   e.stopPropagation();
                   openModel();
-                  setSelectEvent(event);
+                  setSelectEvent({
+                    ...event,
+                    start: event.appointmentStart,
+                  });
                 }}
                 title={`${event.title} - ${event.service}`}
               />
