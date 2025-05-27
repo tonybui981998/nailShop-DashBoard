@@ -113,7 +113,7 @@ const AppointmentDetail = ({
   // display previous booking
   const getbookingConfirmData = async () => {
     const respond = await getBookingConfirm();
-    console.log("check respond", respond);
+
     const matchData = respond.data.filter(
       (s) =>
         s &&
@@ -153,14 +153,7 @@ const AppointmentDetail = ({
     const format = new Date(date).toLocaleDateString("en-nz");
     return format;
   };
-  // format start -end time
-  const formatTime = (time) => {
-    //console.log("check time time", time);
-    const [hour, mins] = time?.split(":");
-    const amp = hour < 12 ? "AM" : "PM";
-    return `${hour}:${mins} `;
-  };
-  console.log("check booking confirm", bookingConfirmData);
+
   return (
     <div className="modal-overlay" onClick={closeBook}>
       <div className="appointment-detail" onClick={(e) => e.stopPropagation()}>

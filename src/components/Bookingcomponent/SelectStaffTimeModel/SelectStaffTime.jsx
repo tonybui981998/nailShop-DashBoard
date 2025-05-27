@@ -23,7 +23,6 @@ const SelectStaffTime = ({
 
   const generateStaffTimeSlot = () => {
     if (!selectStaffId || !customerSelectDate) {
-      //  console.log("missing date or staff selection");
       return;
     }
 
@@ -31,12 +30,10 @@ const SelectStaffTime = ({
       (s) => s.id === parseInt(selectStaffId)
     );
     if (!staffSelected) {
-      //  console.log("No staff selected");
       return;
     }
 
     const selectedDate = dayjs(customerSelectDate).format("YYYY-MM-DD");
-    // console.log("Selected Date:", selectedDate);
 
     const checkStaffWorkingDay = staffSelected.staffScheduleDtos?.find(
       (s) => s.dayOfWeek === dayjs(customerSelectDate).format("dddd")
@@ -44,7 +41,7 @@ const SelectStaffTime = ({
 
     if (!checkStaffWorkingDay) {
       setStaffTimeSlot([]);
-      //  console.log("No working schedule found for this staff on this date.");
+
       return;
     }
 
@@ -65,8 +62,6 @@ const SelectStaffTime = ({
       getCurrentTime = getCurrentTime.add(15, "minute");
     }
 
-    //console.log("Generated Time Slots:", timeSlot);
-
     const bookedSlots =
       staffSelected.bookingDtos
         ?.filter(
@@ -79,15 +74,11 @@ const SelectStaffTime = ({
           endTime: booking.endTime.slice(0, 5),
         })) || [];
 
-    // console.log("Booked Slots:", bookedSlots);
-
     const availableSlots = timeSlot.filter((slot) => {
       return !bookedSlots.some(
         (booked) => slot >= booked.startTime && slot < booked.endTime
       );
     });
-
-    //  console.log("Available Slots:", availableSlots);
 
     setStaffTimeSlot(availableSlots);
   };

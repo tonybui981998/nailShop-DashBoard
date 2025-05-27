@@ -26,7 +26,7 @@ const CustomerDetails = ({
     borderColor: "red",
   };
   const dispatch = useDispatch();
-  //console.log("check checl", selectEvent);
+
   // submit button
   const submit = () => {
     const data = {

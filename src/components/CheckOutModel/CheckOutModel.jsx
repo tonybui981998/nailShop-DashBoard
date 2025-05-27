@@ -49,7 +49,7 @@ const CheckOutModel = ({
     setAllService(priceUpdate);
     setEditPriceService(null);
   };
-  // console.log("check", allService);
+
   // calculate totalPrice
   const totalprice = () => {
     const total = allService.reduce(
@@ -130,20 +130,18 @@ const CheckOutModel = ({
         usedBy: selectEvent.title,
       },
     };
-    console.log("check data", data);
     setTimeout(async () => {
       setLoading(false);
       const respond = await checkout(data);
-      console.log("check respond", respond);
+
       toast.success("success");
       checkConfirmcheckout();
       setTimeout(() => {
         closeCheckout();
       }, 1500);
-      console.log(data);
     }, 3000);
   };
-  console.log("check voucher", selectEvent);
+
   return (
     <div className="modal-overlay">
       <div className="modal-container">
