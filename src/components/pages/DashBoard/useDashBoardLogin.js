@@ -55,7 +55,7 @@ const useDashBoardLogin = () => {
   const deletebooking = async (id) => {
     await dispatch(fetBookingCancle(id));
   };
-
+  console.log("check admin staff", AdminStaff);
   return {
     clockOut,
     loading,

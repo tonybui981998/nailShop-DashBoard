@@ -14,6 +14,7 @@ const CheckOutModel = ({
   closeCheckout,
   checkConfirmcheckout,
 }) => {
+  //console.log("check even", selectEvent);
   let [loading, setLoading] = useState(false);
   const [showVoucherInput, setShowVoucherInput] = useState(false);
   const [allService, setAllService] = useState(allServiceBooking);
@@ -118,6 +119,7 @@ const CheckOutModel = ({
         BookingDate: selectEvent.DateTime,
         StartTime: selectEvent.bookingStart,
         EndTime: selectEvent.bookingEnd,
+        email: selectEvent.email,
         service: allService.map((s) => ({
           selectedService: s.selectedService,
           duration: s.duration,
@@ -130,16 +132,19 @@ const CheckOutModel = ({
         usedBy: selectEvent.title,
       },
     };
-    setTimeout(async () => {
-      setLoading(false);
-      const respond = await checkout(data);
 
+    const respond = await checkout(data);
+    if (respond) {
+      setLoading(true);
       toast.success("success");
       checkConfirmcheckout();
       setTimeout(() => {
         closeCheckout();
       }, 1500);
-    }, 3000);
+    } else {
+      setLoading(true);
+      toast.error("Sorry something wrong , please check the system");
+    }
   };
 
   return (

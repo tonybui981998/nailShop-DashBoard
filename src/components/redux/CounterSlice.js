@@ -82,7 +82,7 @@ export const fetStaffBooking = createAsyncThunk(
   "counter/fetStaffBooking",
   async (data) => {
     const respond = await staffmakeBooking(data);
-    return respond.data;
+    return respond;
   }
 );
 export const counterSlice = createSlice({
@@ -106,9 +106,25 @@ export const counterSlice = createSlice({
     handleDisplayStaffWorking: (state, action) => {
       const today = new Date(action.payload);
       const dayName = today.toLocaleDateString("en-NZ", { weekday: "long" });
-      state.GetStaffWorkingDay = state.AdminStaff.filter((staff) =>
-        staff.staffScheduleDtos?.some((s) => s.dayOfWeek === dayName)
-      );
+      const seslectDate = today.toISOString().split("T")[0];
+      state.GetStaffWorkingDay = state.AdminStaff.filter((staff) => {
+        const customStaff = staff.customerScheduleDtos?.some(
+          (s) => s.date.slice(0, 10) === seslectDate && s.isDayOff !== true
+        );
+        if (customStaff) {
+          return true;
+        }
+        const hasisDayoff = staff.customerScheduleDtos?.some(
+          (s) => s.date.slice(0, 10) === seslectDate && s.isDayOff === true
+        );
+        if (hasisDayoff) {
+          return false;
+        }
+        const staffSchedule = staff.staffScheduleDtos?.some(
+          (s) => s.dayOfWeek === dayName
+        );
+        return staffSchedule;
+      });
     },
   },
   extraReducers: (builder) => {

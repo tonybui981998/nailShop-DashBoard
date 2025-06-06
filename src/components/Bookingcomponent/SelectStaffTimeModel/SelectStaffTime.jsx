@@ -57,7 +57,33 @@ const SelectStaffTime = ({
       .second(0);
     const timeSlot = [];
 
-    while (getCurrentTime.hour() < endHour) {
+    let totalDuration = 0;
+    if (previousService && previousService.length > 0) {
+      totalDuration = previousService.reduce(
+        (sum, service) => sum + parseInt(service.duration),
+        0
+      );
+    }
+
+    const startMinute = parseInt(
+      checkStaffWorkingDay.startTime.split(":")[1],
+      10
+    );
+    const endMinute = parseInt(checkStaffWorkingDay.endTime.split(":")[1], 10);
+    const staffEndMinutes = endHour * 60 + endMinute;
+
+    getCurrentTime = dayjs(customerSelectDate)
+      .hour(startHour)
+      .minute(startMinute)
+      .second(0);
+
+    while (true) {
+      const currentMinutes =
+        getCurrentTime.hour() * 60 + getCurrentTime.minute();
+      const endingMinutes = currentMinutes + totalDuration;
+
+      if (endingMinutes > staffEndMinutes) break;
+
       timeSlot.push(getCurrentTime.format("HH:mm"));
       getCurrentTime = getCurrentTime.add(15, "minute");
     }

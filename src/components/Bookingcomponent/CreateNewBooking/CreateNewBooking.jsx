@@ -82,37 +82,67 @@ const CreateNewBooking = ({
     setSelectedStartTime(null);
     setCalculatedEndTime(null);
   }, [selectStaffId]);
+  // validation
+  const validation = () => {
+    if (
+      !selectedStartTime ||
+      !calculatedEndTime ||
+      !customerSelectDate ||
+      !selectStaffId
+    ) {
+      toast.error("Please chek the information and try again");
+      return false;
+    }
+    return true;
+  };
   const submitAppointment = async () => {
-    setLoading(true);
-    const data = {
-      customerName: customerName,
-      customerPhone: selectEvent.customerPhone,
-      email: selectEvent.email,
-      BookingDate: customerSelectDate,
-      StartTime: selectedStartTime + ":00",
-      EndTime: calculatedEndTime + ":00",
-      TotalPrice: totalPriceService,
-      BookingNote: cusBookingNote,
-      StaffId: parseInt(selectStaffId),
-      bookingServices: previousService.map((s) => ({
-        selectedService: s.selectedService,
-        duration: s.duration,
-        price: s.price,
-        BookingId: s.bookingId,
-      })),
-    };
-    setTimeout(async () => {
-      setLoading(false);
-      const result = await dispatch(fetStaffBooking(data));
-      if (result.payload === "Create success") {
+    const check = validation();
+    if (check) {
+      setLoading(true);
+      const data = {
+        customerName: customerName,
+        customerPhone: selectEvent.customerPhone,
+        email: selectEvent.email,
+        BookingDate: customerSelectDate,
+        StartTime: selectedStartTime + ":00",
+        EndTime: calculatedEndTime + ":00",
+        TotalPrice: totalPriceService,
+        BookingNote: cusBookingNote,
+        StaffId: parseInt(selectStaffId),
+        bookingServices: previousService.map((s) => ({
+          selectedService: s.selectedService,
+          duration: s.duration,
+          price: s.price,
+          BookingId: s.bookingId,
+        })),
+      };
+      try {
+        const result = await dispatch(fetStaffBooking(data));
+        if (result.payload.data === "Create success") {
+          setLoading(false);
+          toast.success("booking success");
+          await reLoadAdmin();
+          dispatch(handleDisplayStaffWorking(currentSelectedDate));
+          setTimeout(() => {
+            closeBook();
+            closeModel();
+          }, 1500);
+        } else {
+          setLoading(false);
+          toast.error("sorry something wrong");
+          await reLoadAdmin();
+          dispatch(handleDisplayStaffWorking(currentSelectedDate));
+        }
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
         await reLoadAdmin();
         dispatch(handleDisplayStaffWorking(currentSelectedDate));
-      } else {
-        toast.error("sorry something wrong");
+        toast.error(
+          "please fill all information or contact admin for more information"
+        );
       }
-      closeBook();
-      closeModel();
-    }, 3000);
+    }
   };
 
   return (

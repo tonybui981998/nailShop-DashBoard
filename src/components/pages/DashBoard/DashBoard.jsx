@@ -6,9 +6,10 @@ import HashLoader from "react-spinners/HashLoader";
 import CustomerFeedBack from "../../DisplayCoponents/CustomerFeedBack/ CustomerFeedBack";
 import useDashBoardLogin from "./useDashBoardLogin";
 import BookingCalender from "../../Bookingcomponent/BookingCalender/BookingCalender";
+import StaffManagement from "../../\bStaffManagement/StaffMangementMain/StaffManagement";
 
 const DashBoard = () => {
-  const [active, setActive] = useState("staffDisplay");
+  const [active, setActive] = useState("booking");
   const override = {
     display: "block",
     margin: "0 auto",
@@ -53,7 +54,13 @@ const DashBoard = () => {
           className={`options ${active === "booking" ? "active" : ""}`}
           onClick={() => setActive("booking")}
         >
-          Staff
+          Booking
+        </div>
+        <div
+          className={`options ${active === "staff" ? "active" : ""}`}
+          onClick={() => setActive("staff")}
+        >
+          Staff Management
         </div>
 
         <div className="options" onClick={clockOut}>
@@ -72,6 +79,7 @@ const DashBoard = () => {
             reLoadAdmin={reLoadAdmin}
           />
         )}
+        {active === "staff" && <StaffManagement AdminStaff={AdminStaff} />}
       </div>
     </div>
   );
