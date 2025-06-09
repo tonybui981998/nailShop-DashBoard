@@ -6,7 +6,7 @@ import HashLoader from "react-spinners/HashLoader";
 import CustomerFeedBack from "../../DisplayCoponents/CustomerFeedBack/ CustomerFeedBack";
 import useDashBoardLogin from "./useDashBoardLogin";
 import BookingCalender from "../../Bookingcomponent/BookingCalender/BookingCalender";
-import StaffManagement from "../../\bStaffManagement/StaffMangementMain/StaffManagement";
+import StaffManagement from "../../staffManagement/StaffManagement/StaffManagement";
 
 const DashBoard = () => {
   const [active, setActive] = useState("booking");
