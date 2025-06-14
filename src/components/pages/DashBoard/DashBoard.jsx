@@ -26,7 +26,7 @@ const DashBoard = () => {
     reLoadAdmin,
   } = useDashBoardLogin();
   const dispatch = useDispatch();
-
+  console.log("check admin staff", AdminStaff);
   return (
     <div className="dashboard">
       {loading && (
@@ -79,7 +79,13 @@ const DashBoard = () => {
             reLoadAdmin={reLoadAdmin}
           />
         )}
-        {active === "staff" && <StaffManagement AdminStaff={AdminStaff} />}
+        {active === "staff" && (
+          <StaffManagement
+            handleDisplayStaffWorking={handleDisplayStaffWorking}
+            reLoadAdmin={reLoadAdmin}
+            AdminStaff={AdminStaff}
+          />
+        )}
       </div>
     </div>
   );

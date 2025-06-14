@@ -8,7 +8,7 @@ const StaffScheduleModel = ({ staffSelected, closeStaffSchedule }) => {
   const customcheking = () => {
     const today = new Date().toISOString().split("T")[0];
     const getcustomschedule = staffSelected.customerScheduleDtos.filter(
-      (s) => s.date.slice(0, 10) > today && s.isDayOff === false
+      (s) => s.date.slice(0, 10) > today /*s&& .isDayOff === false*/
     );
     if (getcustomschedule.length > 0) {
       setcustomschedule(getcustomschedule);
@@ -53,7 +53,8 @@ const StaffScheduleModel = ({ staffSelected, closeStaffSchedule }) => {
                     <td>{index + 1}</td>
                     <td>{item.date.slice(0, 10)}</td>
                     <td>{convertTime(item.startTime)}</td>
-                    <td>{item.endTime}</td>
+
+                    <td>{convertTime(item.endTime)}</td>
                     <td>{item.isDayOff ? "Day Off" : "Working"}</td>
                   </tr>
                 ))}

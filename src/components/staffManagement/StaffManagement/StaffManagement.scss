@@ -107,3 +107,17 @@
     }
   }
 }
+
+// 750
+@media (max-width: 750px) {
+  .staff-management {
+    overflow-x: auto;
+    .header {
+      h2 {
+        font-size: 22px;
+      }
+    }
+    table {
+    }
+  }
+}

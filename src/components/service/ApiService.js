@@ -208,6 +208,48 @@ const getBookingConfirm = async () => {
     console.log(e);
   }
 };
+// adding new staff
+const AddNewStaff = async (data) => {
+  const apiAddStaff = import.meta.env.VITE_API_ADDSTAFF;
+  try {
+    const respond = await axios.post(`${api}${apiAddStaff}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+// update staff information
+const staffInfor = async (data) => {
+  const updatestaff = import.meta.env.VITE_API_UPDATESTAFF;
+  try {
+    const respond = await axios.post(`${api}${updatestaff}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
+// update custom schedule
+const customSchedule = async (data) => {
+  const customapi = import.meta.env.VITE_API_CUSTOMSCHEDULE;
+  try {
+    const respond = await axios.post(`${api}${customapi}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return respond;
+  } catch (e) {
+    console.log(e);
+  }
+};
 export {
   getLogin,
   getCustomerFeedBack,
@@ -228,4 +270,7 @@ export {
   confirmcheckout,
   adminEmail,
   getBookingConfirm,
+  AddNewStaff,
+  staffInfor,
+  customSchedule,
 };

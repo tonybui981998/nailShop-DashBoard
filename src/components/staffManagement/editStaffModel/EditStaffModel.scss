@@ -4,12 +4,12 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.3); // mờ nền
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  overflow: scroll;
+  overflow: auto;
 
   .model {
     background-color: #fff;
@@ -19,21 +19,9 @@
     max-width: 95%;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     position: relative;
-
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      background-color: rgba(255, 255, 255, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 20px;
-    }
-
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
     .form-title {
       font-size: 26px;
       font-weight: 700;
@@ -89,11 +77,16 @@
     .schedule-section {
       margin-top: 30px;
 
+      .active {
+        color: red;
+      }
+
       h3 {
         font-size: 20px;
         font-weight: 600;
         margin-bottom: 14px;
         color: #333;
+        cursor: pointer;
       }
 
       .schedule-table {
@@ -114,12 +107,21 @@
           color: #555;
         }
 
-        input[type="time"] {
+        input[type="time"],
+        input[type="date"],
+        select {
           padding: 6px 8px;
           font-size: 14px;
           border-radius: 4px;
           border: 1px solid #ccc;
-          width: 100%;
+
+          background-color: #fff;
+          color: #333;
+
+          &:focus {
+            border-color: #0091ea;
+            outline: none;
+          }
         }
 
         input[type="checkbox"] {
@@ -168,8 +170,5 @@
     }
   }
 }
-@media (max-width: 500px) {
-  .add-staff-form .model .schedule-section {
-    overflow-x: auto;
-  }
+@media (max-width: 680px) {
 }

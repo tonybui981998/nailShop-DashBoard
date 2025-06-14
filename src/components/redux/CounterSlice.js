@@ -108,22 +108,24 @@ export const counterSlice = createSlice({
       const dayName = today.toLocaleDateString("en-NZ", { weekday: "long" });
       const seslectDate = today.toISOString().split("T")[0];
       state.GetStaffWorkingDay = state.AdminStaff.filter((staff) => {
-        const customStaff = staff.customerScheduleDtos?.some(
-          (s) => s.date.slice(0, 10) === seslectDate && s.isDayOff !== true
-        );
-        if (customStaff) {
-          return true;
+        if (staff.isActive === "available") {
+          const customStaff = staff.customerScheduleDtos?.some(
+            (s) => s.date.slice(0, 10) === seslectDate && s.isDayOff == false
+          );
+          if (customStaff) {
+            return true;
+          }
+          const hasisDayoff = staff.customerScheduleDtos?.some(
+            (s) => s.date.slice(0, 10) === seslectDate && s.isDayOff === true
+          );
+          if (hasisDayoff) {
+            return false;
+          }
+          const staffSchedule = staff.staffScheduleDtos?.some(
+            (s) => s.dayOfWeek === dayName
+          );
+          return staffSchedule;
         }
-        const hasisDayoff = staff.customerScheduleDtos?.some(
-          (s) => s.date.slice(0, 10) === seslectDate && s.isDayOff === true
-        );
-        if (hasisDayoff) {
-          return false;
-        }
-        const staffSchedule = staff.staffScheduleDtos?.some(
-          (s) => s.dayOfWeek === dayName
-        );
-        return staffSchedule;
       });
     },
   },

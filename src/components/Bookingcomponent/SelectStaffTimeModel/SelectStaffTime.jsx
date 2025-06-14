@@ -22,40 +22,56 @@ const SelectStaffTime = ({
   }, [AdminStaff, selectStaffId, customerSelectDate]);
 
   const generateStaffTimeSlot = () => {
-    if (!selectStaffId || !customerSelectDate) {
-      return;
-    }
+    if (!selectStaffId || !customerSelectDate) return;
 
     const staffSelected = AdminStaff.find(
       (s) => s.id === parseInt(selectStaffId)
     );
-    if (!staffSelected) {
-      return;
-    }
+    if (!staffSelected) return;
 
     const selectedDate = dayjs(customerSelectDate).format("YYYY-MM-DD");
+    const selectedDayName = dayjs(customerSelectDate).format("dddd");
 
-    const checkStaffWorkingDay = staffSelected.staffScheduleDtos?.find(
-      (s) => s.dayOfWeek === dayjs(customerSelectDate).format("dddd")
+    let startHour, startMinute, endHour, endMinute;
+
+    // Check custom schedule trước
+    const customSchedule = staffSelected.customerScheduleDtos?.find(
+      (s) => s.date.slice(0, 10) === selectedDate
     );
 
-    if (!checkStaffWorkingDay) {
-      setStaffTimeSlot([]);
+    if (customSchedule) {
+      if (customSchedule.isDayOff) {
+        setStaffTimeSlot([]);
+        return;
+      }
 
-      return;
+      startHour = parseInt(customSchedule.startTime.split(":")[0], 10);
+      startMinute = parseInt(customSchedule.startTime.split(":")[1], 10);
+      endHour = parseInt(customSchedule.endTime.split(":")[0], 10);
+      endMinute = parseInt(customSchedule.endTime.split(":")[1], 10);
+    } else {
+      // Dùng lịch cố định nếu không có custom
+      const defaultSchedule = staffSelected.staffScheduleDtos?.find(
+        (s) => s.dayOfWeek === selectedDayName
+      );
+
+      if (!defaultSchedule) {
+        setStaffTimeSlot([]);
+        return;
+      }
+
+      startHour = parseInt(defaultSchedule.startTime.split(":")[0], 10);
+      startMinute = parseInt(defaultSchedule.startTime.split(":")[1], 10);
+      endHour = parseInt(defaultSchedule.endTime.split(":")[0], 10);
+      endMinute = parseInt(defaultSchedule.endTime.split(":")[1], 10);
     }
-
-    const startHour = parseInt(
-      checkStaffWorkingDay.startTime.split(":")[0],
-      10
-    );
-    const endHour = parseInt(checkStaffWorkingDay.endTime.split(":")[0], 10);
 
     let getCurrentTime = dayjs(customerSelectDate)
       .hour(startHour)
-      .minute(0)
+      .minute(startMinute)
       .second(0);
-    const timeSlot = [];
+
+    const staffEndMinutes = endHour * 60 + endMinute;
 
     let totalDuration = 0;
     if (previousService && previousService.length > 0) {
@@ -65,17 +81,7 @@ const SelectStaffTime = ({
       );
     }
 
-    const startMinute = parseInt(
-      checkStaffWorkingDay.startTime.split(":")[1],
-      10
-    );
-    const endMinute = parseInt(checkStaffWorkingDay.endTime.split(":")[1], 10);
-    const staffEndMinutes = endHour * 60 + endMinute;
-
-    getCurrentTime = dayjs(customerSelectDate)
-      .hour(startHour)
-      .minute(startMinute)
-      .second(0);
+    const timeSlot = [];
 
     while (true) {
       const currentMinutes =

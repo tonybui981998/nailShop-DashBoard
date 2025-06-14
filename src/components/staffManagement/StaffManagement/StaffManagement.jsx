@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import "./StaffManagement.scss";
 import StaffScheduleModel from "../staffscheduleModel/StaffScheduleModel";
 import AddStaffModel from "../addStaffModel/AddStaffModel";
+import EditStaffModel from "../editStaffModel/EditStaffModel";
 
-const StaffManagement = ({ AdminStaff }) => {
+const StaffManagement = ({
+  AdminStaff,
+  reLoadAdmin,
+  handleDisplayStaffWorking,
+}) => {
+  console.log("check staff", AdminStaff);
   const [staffSelected, setstaffSelected] = useState();
   const [staffschedule, setstaffschedule] = useState(false);
   const [addstaff, setaddStaff] = useState(false);
+  const [editStaffmodel, seteditStaffModel] = useState(false);
   // open staff schedule
   const openStaffSchedule = (data) => {
     setstaffschedule(true);
@@ -23,6 +30,15 @@ const StaffManagement = ({ AdminStaff }) => {
   // close add staff model
   const closeAddModel = () => {
     setaddStaff(false);
+  };
+  // open edit staff model
+  const openEditStaffModel = (staff) => {
+    setstaffSelected(staff);
+    seteditStaffModel(true);
+  };
+  // close edit model
+  const closeEditStaffModel = () => {
+    seteditStaffModel(false);
   };
   return (
     <div className="staff-management">
@@ -68,8 +84,12 @@ const StaffManagement = ({ AdminStaff }) => {
                 </button>
               </td>
               <td>
-                <button className="action-btn">Edit</button>
-                <button className="action-btn delete">Delete</button>
+                <button
+                  className="action-btn"
+                  onClick={() => openEditStaffModel(staff)}
+                >
+                  Edit
+                </button>
               </td>
             </tr>
           ))}
@@ -81,7 +101,21 @@ const StaffManagement = ({ AdminStaff }) => {
           closeStaffSchedule={closeStaffSchedule}
         />
       )}
-      {addstaff && <AddStaffModel closeAddModel={closeAddModel} />}
+      {addstaff && (
+        <AddStaffModel
+          reLoadAdmin={reLoadAdmin}
+          handleDisplayStaffWorking={handleDisplayStaffWorking}
+          closeAddModel={closeAddModel}
+        />
+      )}
+      {editStaffmodel && (
+        <EditStaffModel
+          staffSelected={staffSelected}
+          closeEditStaffModel={closeEditStaffModel}
+          handleDisplayStaffWorking={handleDisplayStaffWorking}
+          reLoadAdmin={reLoadAdmin}
+        />
+      )}
     </div>
   );
 };
