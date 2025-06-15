@@ -15,8 +15,8 @@ const LoginForm = () => {
     borderColor: "red",
   };
   const [formData, setFormData] = useState({
-    UserName: "",
-    Password: "",
+    UserName: "adminUser",
+    Password: "admin123",
   });
   const validation = () => {
     if (!formData.UserName || !formData.Password) {
